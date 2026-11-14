@@ -2,6 +2,7 @@
   "name": "get-start",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -12,6 +13,8 @@
   "dependencies": {
     "@langchain/core": "^1.4.1",
     "@langchain/groq": "^1.3.1",
-    "langchain": "^1.6.6"
+    "dotenv": "^18.0.10",
+    "langchain": "^1.6.6",
+    "zod": "^4.6.7"
   }
 }
