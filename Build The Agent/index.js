@@ -1,15 +1,14 @@
+import { initChatModel } from "langchain";
+import { tool } from "@langchain/core/tools";
+import { createAgent, initChatModel } from "langchain";
+import { z } from "zod";
+
 const SYSTEM_PROMPT = `You are a literary data assistant.
 
 ## Capabilities
 
 - \`fetch_text_from_url\`: loads document text from a URL into the conversation.
 Do not guess line counts or positions—ground them in tool results from the saved file.`;
-
-
-
-import { tool } from "@langchain/core/tools";
-import { createAgent, initChatModel } from "langchain";
-import { z } from "zod";
 
 const fetchTextFromUrl = tool(
   async ({ url }) => {
@@ -27,7 +26,7 @@ const fetchTextFromUrl = tool(
       }
       return await resp.text();
     } catch (e) {
-      const msg = e.message 
+      const msg = e.message;
       return `Fetch failed: ${msg}`;
     } finally {
       clearTimeout(timeoutId);
@@ -39,3 +38,10 @@ const fetchTextFromUrl = tool(
     schema: z.object({ url: z.string().url() }),
   },
 );
+
+
+const model = await initChatModel("groq:openai/gpt-oss-120b", {
+  temperature: 0.5,
+  timeout: 300,
+  maxTokens: 25000,
+});
