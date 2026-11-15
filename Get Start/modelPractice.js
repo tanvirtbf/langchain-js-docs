@@ -1,31 +1,38 @@
 import { tool } from "@langchain/core/tools";
 import { createAgent, initChatModel } from "langchain";
+import { tool } from "@langchain/core/tools";
 import * as z from "zod";
 
+// Tools
+
 const search = tool(({ query }) => `Search for ${query}`, {
-  name: "search",
+  name: "Search",
   description: "Search for information",
-  schema: z.object({ query: z.string() }),
+  schema: z.object({ query: z.string() }), // ← এটা যোগ
 });
 
+// Model Configure
 const model = await initChatModel("openai/gpt-oss-120b", {
-  modelProvider: "groq",
   temperature: 0.2,
-  maxTokens: 1000,
+  modelProvider: "groq",
 });
 
+// Model Creation
 const llm = createAgent({
-  model: model,
+  model,
   tools: [search],
 });
 
+// Invoke
 const result = await llm.invoke({
   messages: [
     {
       role: "human",
-      content: "Who is the prime minister in bangladesh?",
+      content: "what is the current weather in dhaka?",
     },
   ],
 });
 
-console.log(result.messages[result.messages.length - 1].content);
+// Print
+
+console.log(result);
