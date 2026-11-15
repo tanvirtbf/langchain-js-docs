@@ -41,11 +41,9 @@ const fetchTextFromUrl = tool(
   },
 );
 
-const model = await initChatModel("google:gemini-2.5-flash-lite", {
-  temperature: 0.5,
-  timeout: 600_000,
-  maxTokens: 25000,
-  streaming: true,
+const model = await initChatModel("google:gemini-3.5-flash-lite", {
+    temperature: 0.2,
+    maxTokens: 4000,
 });
 
 const checkpointer = new MemorySaver();
