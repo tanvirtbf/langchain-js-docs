@@ -1,38 +1,21 @@
 import { tool } from "@langchain/core/tools";
-import { createAgent, initChatModel } from "langchain";
-import { tool } from "@langchain/core/tools";
-import * as z from "zod";
+import { initChatModel, createAgent } from "langchain";
 
-// Tools
-
-const search = tool(({ query }) => `Search for ${query}`, {
-  name: "Search",
-  description: "Search for information",
-  schema: z.object({ query: z.string() }), // ← এটা যোগ
-});
-
-// Model Configure
-const model = await initChatModel("openai/gpt-oss-120b", {
+const llmConfig = await initChatModel("openai/gpt-oss-120b", {
+  modelProvider: 'groq',
   temperature: 0.2,
-  modelProvider: "groq",
-});
+})
 
-// Model Creation
-const llm = createAgent({
-  model,
-  tools: [search],
-});
+const model = createAgent({
+  model: llmConfig,
+  tools: []
+})
 
-// Invoke
-const result = await llm.invoke({
+console.log(await model.invoke({
   messages: [
     {
-      role: "human",
-      content: "what is the current weather in dhaka?",
-    },
-  ],
-});
-
-// Print
-
-console.log(result);
+      role: 'human',
+      content: 'Hi'
+    }
+  ]
+}))
