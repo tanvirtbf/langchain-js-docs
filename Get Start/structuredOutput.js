@@ -2,8 +2,8 @@ import { createAgent, initChatModel, SystemMessage } from "langchain";
 import * as z from "zod";
 
 const response = z.object({
-    title: z.string(),
-    description: z.string(),
+    year: z.string(),
+    team: z.string(),
 })
 
 const llm = await initChatModel("openai/gpt-oss-120b", {
@@ -21,7 +21,7 @@ const result = await model.invoke({
     messages: [
         {
             role: 'human',
-            content: 'describe claude with title and description'
+            content: '10th fifa world cup winner'
         }
     ]
 })
