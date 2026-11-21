@@ -5,13 +5,22 @@ import * as z from "zod";
 
 const checkPointer = new MemorySaver(); // checkPointer er mane hocche ekta gudam jekhane akhn theke chaile state store korte parbe jate ager conversation mone rakhte pare.
 
-const search = tool(({ query }) => `Search for ${query}`, {
-  name: "Search_tool",
-  description: "Search for information",
-  schema: z.object({
-    query: z.string().describe("Search Query"),
-  }),
-});
+const search = tool(
+  ({ query, config }) => {
+    if (config.context?.userId === "1") {
+      return "Search for Tanvir Ahmed Right ? Tanvir Ahmed is a Software Engineer . ";
+    } else if (config.context?.userId === "2") {
+      return "Searach for Sadia right ? Sadia is a crocheter. ";
+    }
+  },
+  {
+    name: "Search_tool",
+    description: "Search for information",
+    schema: z.object({
+      query: z.string().describe("Search Query"),
+    }),
+  },
+);
 
 const llm = await initChatModel("openai/gpt-oss-120b", {
   modelProvider: "groq",
@@ -28,28 +37,29 @@ const result = await agent.invoke(
     messages: [
       {
         role: "human",
-        content: "Hi, I am Tanvir. A software Engineer",
+        content: "Who is Tanvir Ahmed ? ",
       },
     ],
   },
   {
     configurable: { thread_id: "chat-1" },
+    context: { userId: "1", userName: "Tanvir Ahmed", userAge: "27" },
   },
 );
 
-const result2 = await agent.invoke(
-  {
-    messages: [
-      {
-        role: "human",
-        content: "who am i?",
-      },
-    ],
-  },
-  {
-    configurable: { thread_id: "chat-1" },
-  },
-);
+// const result2 = await agent.invoke(
+//   {
+//     messages: [
+//       {
+//         role: "human",
+//         content: "who am i?",
+//       },
+//     ],
+//   },
+//   {
+//     configurable: { thread_id: "chat-1" },
+//   },
+// );
 
 console.log(result.messages[result.messages.length - 1].content, "\n\n\n");
-console.log(result2.messages[result2.messages.length - 1].content);
+// console.log(result2.messages[result2.messages.length - 1].content);
