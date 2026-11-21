@@ -7,6 +7,7 @@ const checkPointer = new MemorySaver(); // checkPointer er mane hocche ekta guda
 
 const search = tool(
   ({ query, config }) => {
+    console.log(config.context)
     if (config.context?.userId === "1") {
       return "Search for Tanvir Ahmed Right ? Tanvir Ahmed is a Software Engineer . ";
     } else if (config.context?.userId === "2") {
@@ -14,10 +15,10 @@ const search = tool(
     }
   },
   {
-    name: "Search_tool",
-    description: "Search for information",
+    name: "Search_tanvir",
+    description: "Search for Tanvir Ahmed",
     schema: z.object({
-      query: z.string().describe("Search Query"),
+      query: z.string().describe("Search Query for Tanvir Ahmed"),
     }),
   },
 );
