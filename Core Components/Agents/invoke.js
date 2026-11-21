@@ -1,3 +1,5 @@
+import * as readline from "node:readline";
+import { stdin as input, stdout as output } from "node:process";
 import { tool } from "@langchain/core/tools";
 import { MemorySaver } from "@langchain/langgraph";
 import { createAgent, initChatModel } from "langchain";
@@ -17,38 +19,42 @@ const llm = await initChatModel("openai/gpt-oss-120b", {
   modelProvider: "groq",
 });
 
-const model = createAgent({
+const agent = createAgent({
   model: llm,
   tools: [search],
   checkpointer: checkPointer,
 });
 
-const result = await model.invoke(
-  {
-    messages: [
-      {
-        role: "human",
-        content: "I am Tanvir",
-      },
-    ],
-  },
-  {
-    configurable: { thread_id: "chat-1" },
-    context: { userId: "chat-1" },
-  },
-);
+// পুরো কথোপকথনে একই config, তাই agent আগের কথা মনে রাখবে
+const config = { configurable: { thread_id: "chat-1" } };
 
-const result2 = await model.invoke({
-    messages: [
-        {
-            role: 'human',
-            content: 'Who am i?'
-        }
-    ]
-}, {
-    configurable: { thread_id: 'chat-1' },
-    context: { userId: 'chat-1' }
-})
+const rl = readline.createInterface({ input, output, prompt: "You: " });
 
-console.log("Result 1: ",result.messages[result.messages.length - 1].content);
-console.log("Result 2: ",result2.messages[result2.messages.length - 1].content);
+console.log('চ্যাট শুরু। শেষ করতে "End" লিখুন।\n');
+rl.prompt();
+
+for await (const line of rl) {
+  const userInput = line.trim();
+
+  if (userInput.toLowerCase() === "end") break;        // End / end / END সবই চলবে
+  if (userInput === "") {                              // ফাঁকা Enter হলে আবার জিজ্ঞেস
+    rl.prompt();
+    continue;
+  }
+
+  try {
+    const result = await agent.invoke(
+      { messages: [{ role: "human", content: userInput }] },
+      config,
+    );
+    console.log(`AI: ${result.messages.at(-1).text}\n`);
+  } catch (err) {
+    // একটা error হলে (যেমন rate limit) পুরো চ্যাট যেন বন্ধ না হয়
+    console.error(`Error: ${err.message}\n`);
+  }
+
+  rl.prompt();
+}
+
+rl.close();
+console.log("চ্যাট শেষ।");
