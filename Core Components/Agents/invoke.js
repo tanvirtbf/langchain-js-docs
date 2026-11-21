@@ -31,4 +31,4 @@ const result = await model.invoke({
     ]
 })
 
-console.log(result)
+console.log(result.messages[result.messages.length - 1].content)
