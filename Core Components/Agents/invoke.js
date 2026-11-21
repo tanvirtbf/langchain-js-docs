@@ -26,7 +26,7 @@ const result = await model.invoke({
     messages: [
         {
             role: 'human',
-            content: 'Hi'
+            content: 'Who am i?'
         }
     ]
 })
