@@ -1,6 +1,9 @@
 import { tool } from "@langchain/core/tools";
+import { MemorySaver } from "@langchain/langgraph";
 import { createAgent, initChatModel } from "langchain";
 import * as z from "zod";
+
+const checkPointer = new MemorySaver();
 
 const search = tool(
     ({ query }) => `Search for ${query}`,
