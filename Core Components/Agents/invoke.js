@@ -17,6 +17,7 @@ const search = tool(({ query }) => `Search for ${query}`, {
 
 const llm = await initChatModel("openai/gpt-oss-120b", {
   modelProvider: "groq",
+  temperature: 0,
 });
 
 const agent = createAgent({
