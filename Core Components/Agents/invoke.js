@@ -37,4 +37,19 @@ const result = await agent.invoke(
   },
 );
 
-console.log(result.messages[result.messages.length - 1].content);
+const result2 = await agent.invoke(
+  {
+    messages: [
+      {
+        role: "human",
+        content: "who am i?",
+      },
+    ],
+  },
+  {
+    configurable: { thread_id: "chat-1" },
+  },
+);
+
+console.log(result.messages[result.messages.length - 1].content, "\n\n\n");
+console.log(result2.messages[result2.messages.length - 1].content);
